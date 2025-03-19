@@ -1,75 +1,32 @@
-import Link from "next/link";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { usePathname } from "next/navigation";
+import React from "react";
+import ArrowLeftBread from "./icons/ArrowLeftBread";
 
-export function BreadcrumbWithCustomSeparator() {
-  const router = usePathname();
+interface BreadcrumbItem {
+  href?: string;
+  label: string;
+}
 
-  const routes = [
-    { path: "/", label: "خانه" },
-    { path: "/profile/me", label: "ناحیه کاربری" },
-    { path: "/profile/edit", label: "اطلاعات کاربری" },
-    { path: "/profile/message", label: "پیغام‌های من" },
-    { path: "/profile/order", label: "سفارشات من" },
-    { path: "/profile/recents", label: "بازدید‌های اخیر" },
-    { path: "/profile/wishlists", label: "علاقه‌مندی‌های من" },
-    { path: "/profile/address", label: "آدرس‌های من" },
-  ];
+interface BreadcrumbProps {
+  items: BreadcrumbItem[];
+  showMobile?: boolean;
+}
 
-  const currentRoute = routes.find((route) => route.path === router);
-
+export default function Breadcrumb({ items, showMobile = true }: BreadcrumbProps) {
   return (
-    <Breadcrumb>
-      <BreadcrumbList>
-        {router === "/profile/me" ? (
-          <>
-            <BreadcrumbSeparator  className="text-customRed -rotate-12" />
-            <BreadcrumbItem >
-              <BreadcrumbPage>بازگشت</BreadcrumbPage>
-            </BreadcrumbItem>
-          </>
-        ) : (
-          <>
-            <BreadcrumbItem>
-              <BreadcrumbLink>
-                <Link href="/">خانه</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            {router.startsWith("/profile") && (
-              <>
-                <BreadcrumbItem>
-                  <BreadcrumbLink>
-                    <Link href="/profile/me">ناحیه کاربری</Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                {router !== "/profile/me" && (
-                  <>
-                    <BreadcrumbSeparator />
-                    {router === "/profile/edit" && (
-                      <BreadcrumbItem>
-                        <BreadcrumbPage>اطلاعات کاربری</BreadcrumbPage>
-                      </BreadcrumbItem>
-                    )}
-                    {router !== "/profile/edit" && currentRoute && (
-                      <BreadcrumbItem>
-                        <BreadcrumbPage>{currentRoute.label}</BreadcrumbPage>
-                      </BreadcrumbItem>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-          </>
-        )}
-      </BreadcrumbList>
-    </Breadcrumb>
+    <div className={`${!showMobile && 'max-md:hidden'}`}>
+        <nav className="mt-6 flex items-center font-light text-sm text-customGray">
+          {items.map((item, index) => (
+            <div key={index} className="flex items-center">
+              {item.href ? (
+                <a href={item.href}>{item.label}</a>
+              ) : (
+                <span className="text-gray-500">{item.label}</span>
+              )}
+              {index < items.length - 1 && <ArrowLeftBread />}
+            </div>
+          ))}
+        </nav>
+      
+    </div>
   );
 }

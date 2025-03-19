@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getTokenFromCookie } from "../helper/getCooki";
+import { deleteCookie } from "cookies-next/client";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -15,10 +16,14 @@ export const fetchUserData = async () => {
       },
     });
     
-    if (response.status === 200) {
+    if(response.data.data.message === "این درخواست نیاز به ورود به سایت دارد."){
+      
+      deleteCookie('token')
+      window.location.href = '/login';
+
+    }else{
       return response.data;
-    } else {
-      throw new Error("Failed to fetch user data: " + response.statusText);
+
     }
   } catch (error: any) {
     console.error("Error fetching user data", error);

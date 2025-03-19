@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import Save from "../icons/Save";
 import useIsMobile from "@/hooks/useIsMobile";
 import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
 
 interface MediaFile {
   main_link: string;
@@ -31,8 +32,13 @@ const Wachlist: React.FC = () => {
       <div className="bg-lightBlueGray border rounded-md">
         <div className="flex justify-between text-customGray p-4">
           <div className="flex flex-col">
-            <p>هدایایی برای اعضای خانواده</p>
-            <p>لیست خصوصی</p>
+            <div className="flex items-center">
+              <p className="font-medium	 text-sm">هدایایی برای اعضای خانواده</p>
+              <span className="mr-1">
+                <ArrowLeft />
+              </span>
+            </div>
+            <p className="text-sm font-light	">لیست خصوصی</p>
           </div>
           <Button
             variant="outline"
@@ -73,10 +79,15 @@ const Wachlist: React.FC = () => {
 
   return (
     <div className="bg-lightBlueGray border rounded-md">
-      <div className="flex justify-between text-customGray p-4">
+      <div className="flex justify-between text-customGray p-4 max-md:pl-0">
         <div className="flex flex-col">
-          <p className="max-md:text-xs	">هدایایی برای اعضای خانواده</p>
-          <p className="max-md:text-xs	">لیست خصوصی</p>
+          <div className="flex items-center">
+            <p className="font-medium	 text-sm ">هدایایی برای اعضای خانواده</p>
+            <span className="mr-1 text-aquaBlue">
+              <ArrowLeft />
+            </span>
+          </div>{" "}
+          <p className="max-md:text-xs text-sm font-light	">لیست خصوصی</p>
         </div>
         <Button
           variant="outline"
@@ -86,23 +97,21 @@ const Wachlist: React.FC = () => {
         </Button>
       </div>
       <div className="flex gap-1">
-        {data?.data
-          ?.slice(0, isMobile ? 3 : 6) 
-          .map((item: WachlistItem) => (
-          
-            <Image
-              key={item.id}
-              alt="product image"
-              src={item.media_files?.[0]?.main_link || "fallback-image-url"}
-              className="w-[148px] h-[148px] max-md:h-[79px] max-md:w-[79px] object-cover rounded-md"
-              loading="lazy"
-              width={148}
-              height={148}
-              onLoadingComplete={(e) => e.classList.remove("blur-sm")}
-            />
-          ))}
+        {data?.data?.slice(0, isMobile ? 3 : 5).map((item: WachlistItem) => (
+          <Image
+            key={item.id}
+            alt="product image"
+            src={item.media_files?.[0]?.main_link || "fallback-image-url"}
+            className="w-[148px] h-[148px] max-md:h-[79px] max-md:w-[79px] object-cover "
+            loading="lazy"
+            width={148}
+            height={148}
+            unoptimized
+            onLoadingComplete={(e) => e.classList.remove("blur-sm")}
+          />
+        ))}
 
-        <div className="w-[148px] text-customGray h-[148px] max-md:text-xs	   max-md:h-[79px] max-md:w-[79px] flex items-center justify-center">
+        <div className="w-[148px]  text-customGray h-[148px] max-md:text-xs	   max-md:h-[79px] max-md:w-[79px] flex items-center justify-center">
           {data?.data?.length || 0}
           <br />
           محصول

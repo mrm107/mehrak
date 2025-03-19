@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getTokenFromCookie } from '../helper/getCooki';
+import { deleteCookie } from 'cookies-next/client';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -23,8 +24,15 @@ export const sendAddressData = async (data: any) => {
         'Authorization': `Bearer ${getTokenFromCookie()}`,
       },
     });
-    return response.data; 
-  } catch (error) {
+    if(response.data.data.message === "این درخواست نیاز به ورود به سایت دارد."){
+      
+      deleteCookie('token')
+      window.location.href = '/login';
+
+    }else{
+      return response.data;
+
+    }  } catch (error) {
     console.error('Error sending address data:', error);
     throw error; 
   }

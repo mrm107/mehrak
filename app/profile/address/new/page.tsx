@@ -10,6 +10,7 @@ import { sendAddressData } from "@/utils/api/createAddress";
 import toast from "react-hot-toast";
 import City from "@/components/Profile/ChooseCity";
 import ComboboxDemo from "@/components/Profile/ChooseState";
+import { useUserContext } from "@/app/context/UserContext";
 interface Errors {
   address: string;
   phone: string;
@@ -22,7 +23,7 @@ const Page: React.FC = () => {
   const [ostanid, setOstanid] = useState("");
   const [cityid, setCityid] = useState("");
   const rout = useRouter();
-  const [gender, setGender] = useState<string>("0");
+  const [gender, setGender] = useState<string>("1");
   const [address, setAddress] = useState<string>("");
   const [plate, setPlate] = useState<string>("");
   const [unit, setUnit] = useState<string>("");
@@ -31,25 +32,31 @@ const Page: React.FC = () => {
   const [phone, setPhone] = useState<string>("");
   const [postalCode, setPostalCode] = useState<string>("");
   const [loading, setLoading] = useState(false);
-
+  const { mobile, lastName, firstName } = useUserContext();
   const handleSubmit = async () => {
     setLoading(true);
     const addressData = {
-      first_name: receiverName,
-      last_name: receiverLastName,
+      first_name: gender === "1" ? firstName : receiverName,
+      last_name: gender === "1" ? lastName : receiverLastName,
       address: address,
       state_id: ostanid,
       city_id: cityid,
       postal_code: postalCode,
-      mobile: phone,
+      mobile: gender === "1" ? mobile : phone,
       phone: phone,
-      for_me: gender,
+      for_me: gender === "1" ? true : false,
     };
 
     try {
       await sendAddressData(addressData).then((res) => {
         if (!res.success) {
-          toast.error(res.data.message);
+          if (res.data.message === "تکمیل گزینه postal code الزامی است") {
+            toast.error("تکمیل گزینه کد پسیتی اجباری می باشد");
+          } else if (res.data.message == "postal code معتبر نمی باشد.") {
+            toast.error("کد پستی معتبر نمی باشد");
+          } else {
+            toast.error(res.data.message);
+          }
         }
         if (res.success) {
           toast.success("آدرس با موفقیت ثبت گردید");
@@ -127,37 +134,47 @@ const Page: React.FC = () => {
   };
 
   const isFormValid =
-    city &&
-    ostan &&
-    address &&
-    plate &&
-    unit &&
-    receiverName &&
-    receiverLastName &&
-    phone &&
-    postalCode &&
-    typeof gender === "string" &&
-    gender !== "0" &&
-    !errors.address &&
-    !errors.phone &&
-    !errors.postalCode;
+    (gender === "1" &&
+      ostan &&
+      address &&
+      plate &&
+      unit &&
+      postalCode &&
+      !errors.postalCode &&
+      !errors.address &&
+      city) ||
+    (gender === "2" &&
+      city &&
+      ostan &&
+      address &&
+      plate &&
+      unit &&
+      receiverName &&
+      receiverLastName &&
+      phone &&
+      postalCode &&
+      !errors.address &&
+      !errors.phone &&
+      !errors.postalCode);
 
   return (
-    <div className="max-md:px-4">
+    <div className="max-md:px-4 ">
       <>
         <div className="flex relative">
-      <div className="max-md:flex max-md:items-end">
-      <i
-            className="cursor-pointer max-md:mt-4 text-customGray"
-            onClick={() => {
-              rout.back();
-            }}
-          >
-            <Back />
-          </i>
-          <span className="max-md:block hidden text-customGray mr-4">          ثبت آدرس
-          </span>
-      </div>
+          <div className="max-md:flex max-md:items-end">
+            <i
+              className="cursor-pointer max-md:mt-4 text-customGray"
+              onClick={() => {
+                rout.back();
+              }}
+            >
+              <Back />
+            </i>
+            <span className="max-md:block hidden text-customGray mr-4">
+              {" "}
+              ثبت آدرس
+            </span>
+          </div>
           <div className="relative max-md:hidden">
             <p className="px-5 cursor-pointer mb-2 text-turquoise">
               ثبت آدرس جدید
@@ -183,17 +200,17 @@ const Page: React.FC = () => {
                   setid={setOstanid}
                 />
               </div>
-                {ostan && (
-              <div className="max-md:mt-3">
-                <p className="visible">شهر</p>
+              {ostan && (
+                <div className="max-md:mt-3">
+                  <p className="visible">شهر</p>
                   <City
                     value={city}
                     setValue={setCity}
                     setid={setCityid}
                     id={ostanid}
                   />
-              </div>
-                )}
+                </div>
+              )}
             </div>
 
             <div className="mt-9">
@@ -208,30 +225,52 @@ const Page: React.FC = () => {
                 <p className="text-red-500 text-xs">{errors.address}</p>
               )}
             </div>
-            <div className="grid grid-cols-2 grid-rows-2 mt-6 gap-x-5">
-              <p>پلاک</p>
-              <p>شماره واحد</p>
+            <div className="grid grid-cols-2 grid-rows-2 mt-6 gap-x-[10px]">
+              <p className="flex items-center">پلاک</p>
+              <p className="flex items-center">شماره واحد</p>
               <Input
                 value={plate}
-                onChange={(e) => setPlate(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setPlate(value);
+                  }
+                }}
+                inputMode="numeric"
+                pattern="[0-9]*"
                 placeholder="نوشتن پلاک"
                 className="max-md:text-xs"
               />
+
               <Input
                 value={unit}
-                onChange={(e) => setUnit(e.target.value)}
                 placeholder="نوشتن شماره واحد"
                 className="max-md:text-xs"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setUnit(value);
+                  }
+                }}
+                inputMode="numeric"
+                pattern="[0-9]*"
               />
             </div>
             <div className="grid grid-cols-1 grid-rows-2 mt-6 gap-x-5">
               <p>کدپستی</p>
               <Input
                 value={postalCode}
-                onChange={(e) => handleChange(e, "postalCode")}
-                type="number"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    handleChange(e, "postalCode");
+                  }
+                }}
+                inputMode="numeric"
+                pattern="[0-9]*"
                 placeholder="نوشتن کدپستی"
                 className="max-md:text-xs"
+                maxLength={10}
               />
               {errors.postalCode && (
                 <p className="text-red-500 text-xs">{errors.postalCode}</p>
@@ -243,57 +282,61 @@ const Page: React.FC = () => {
                 <div className="grid px-2 grid-cols-2 justify-evenly border rounded-md py-2">
                   <p
                     className={`cursor-pointer flex justify-center items-center text-center py-2 rounded-xl transition-all duration-300 ${
-                      gender === '1'
-                        ? "bg-blush text-customRed border border-customRed scale-105"
+                      gender === "1"
+                       ? "bg-customBlue text-aquaBlue  border border-aquaBlue scale-105"
                         : "bg-white text-customGray scale-95"
                     }`}
-                    onClick={() => setGender('1')}
+                    onClick={() => setGender("1")}
                   >
                     <span className="mr-2"> خودم </span>
                   </p>
                   <p
                     className={`cursor-pointer flex justify-center items-center text-center py-2 rounded-xl transition-all duration-300 mx-2 ${
-                      gender === '2'
+                      gender === "2"
                         ? "bg-customBlue text-aquaBlue  border border-aquaBlue scale-105"
                         : "bg-white text-customGray scale-95"
                     }`}
-                    onClick={() => setGender('2')}
+                    onClick={() => setGender("2")}
                   >
                     <span className="mr-2"> دیگری </span>
                   </p>
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 grid-rows-2 mt-6 gap-x-5">
-              <p>نام</p>
-              <p>نام خانوادگی</p>
-              <Input
-                value={receiverName}
-                onChange={(e) => setReceiverName(e.target.value)}
-                placeholder=" نوشتن نام"
-                className="max-md:text-xs"
-              />
-              <Input
-                value={receiverLastName}
-                onChange={(e) => setReceiverLastName(e.target.value)}
-                placeholder="نوشتن نام خانوادگی"
-                className="max-md:text-xs"
-              />
-            </div>
+            {lastName && firstName && gender != "1" && (
+              <div className="grid grid-cols-2 grid-rows-2 mt-6 gap-x-5">
+                <p>نام</p>
+                <p>نام خانوادگی</p>
+                <Input
+                  value={receiverName}
+                  onChange={(e) => setReceiverName(e.target.value)}
+                  placeholder=" نوشتن نام"
+                  className="max-md:text-xs"
+                />
+                <Input
+                  value={receiverLastName}
+                  onChange={(e) => setReceiverLastName(e.target.value)}
+                  placeholder="نوشتن نام خانوادگی"
+                  className="max-md:text-xs"
+                />
+              </div>
+            )}
 
-            <div className="grid grid-cols-1 grid-rows-2 mt-6 gap-x-5">
-              <p>تلفن همراه تحویل گیرنده</p>
-              <Input
-                value={phone}
-                onChange={(e) => handleChange(e, "phone")}
-                type="number"
-                placeholder="نوشتن تلفن همراه تحویل گیرنده"
-                className="max-md:text-xs"
-              />
-              {errors.phone && (
-                <p className="text-red-500 text-xs">{errors.phone}</p>
-              )}
-            </div>
+            {gender != "1" && (
+              <div className="grid grid-cols-1 grid-rows-2 mt-6 gap-x-5">
+                <p>تلفن همراه تحویل گیرنده</p>
+                <Input
+                  value={phone}
+                  onChange={(e) => handleChange(e, "phone")}
+                  type="number"
+                  placeholder="نوشتن تلفن همراه تحویل گیرنده"
+                  className="max-md:text-xs"
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-xs">{errors.phone}</p>
+                )}
+              </div>
+            )}
             <div className="flex justify-end">
               <Button
                 className="bg-aquaBlue hover:bg-teal-500 mb-12 w-[70%] mt-6 rounded-md transition-all duration-300 transform hover:scale-105 active:scale-95"

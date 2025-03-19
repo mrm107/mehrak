@@ -76,7 +76,7 @@ const ComboboxDemo: React.FC<ComboboxDemoProps> = ({
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -97,8 +97,8 @@ const ComboboxDemo: React.FC<ComboboxDemoProps> = ({
             className="h-9 border-b border-gray-200 px-2"
           />
           <CommandList>
-            <CommandEmpty>موردی یافت نشد.</CommandEmpty>
-            <CommandGroup>
+            <CommandEmpty className="font-vazirmatn">موردی یافت نشد.</CommandEmpty>
+            <CommandGroup className="font-vazirmatn">
             {data?.data?.map((item: Item) => (
                 <CommandItem
                   key={item.id}

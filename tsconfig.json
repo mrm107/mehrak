@@ -23,7 +23,7 @@
     }
     
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "utils/helper/deleteCooki.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "utils/helper/deleteCooki.ts", "app/shipping/loading.js", "utils/api/addToCart.ts"],
 "exclude": [
   "node_modules",
   "./components/ui/command.tsx"

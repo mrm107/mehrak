@@ -14,7 +14,7 @@ const Page: React.FC = () => {
           <span className="mr-4">پیغام‌های من</span>
         </p>
       </Link>
-      <div className="flex relative pr-10 max-md:pr-0 max-md:mt-8 max-md:border-b ">
+      <div className="flex relative pr-10 max-md:pr-0 max-md:mt-8 max-md:border-b justify-between ">
         <div className="relative">
           <p className={`px-5 cursor-pointer mb-2    text-turquoise`}>
             پیغام‌های من{" "}
@@ -29,6 +29,8 @@ const Page: React.FC = () => {
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           />
         </div>
+        <p className="text-lg font-medium text-turquoise ml-6 max-md:font-medium max-md:text-xs">          تبدیل همه به خوانده شده
+        </p>
       </div>
       <div className="border max-md:border-none max-md:mt-4 max-md:rounded-none rounded-2xl w-full  items-center p-7 max-md:p-4 ">
         <MessageBox />

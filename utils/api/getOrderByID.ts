@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getTokenFromCookie } from '../helper/getCooki';
+import { deleteCookie } from 'cookies-next/client';
 
 async function getOrderByID(id: string) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -15,8 +16,15 @@ async function getOrderByID(id: string) {
       }
     );
 
-    return response.data.data;
+    if(response.data.data.message === "این درخواست نیاز به ورود به سایت دارد."){
+      
+      deleteCookie('token')
+      window.location.href = '/login';
 
+    }else{
+      return response.data.data;
+
+    }
   } catch (error) {
     console.error("Error:", error);
         throw error; 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getTokenFromCookie } from '../helper/getCooki';
+import { deleteCookie } from 'cookies-next/client';
 
 async function getCity(wich: string) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -16,8 +17,15 @@ async function getCity(wich: string) {
       }
     );
 
-return response.data
+    if(response.data.data.message === "این درخواست نیاز به ورود به سایت دارد."){
+      
+      deleteCookie('token')
+      window.location.href = '/login';
 
+    }else{
+      return response.data;
+
+    }
   } catch (error) {
     console.error("Error:", error);
   }

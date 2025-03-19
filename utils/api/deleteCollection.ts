@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getTokenFromCookie } from '../helper/getCooki';
+import { deleteCookie } from 'cookies-next/client';
 
 export const deleteCollection = async (collectionId: number) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -10,8 +11,15 @@ export const deleteCollection = async (collectionId: number) => {
         'Authorization': `Bearer ${getTokenFromCookie()}`,
       },
     });
-    return response.data; 
-  } catch (error: unknown) {
+    if(response.data.data.message === "این درخواست نیاز به ورود به سایت دارد."){
+      
+      deleteCookie('token')
+      window.location.href = '/login';
+
+    }else{
+      return response.data;
+
+    }  } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       console.error('Error deleting collection:', error.response?.data || error.message);
       throw error.response?.data || error; 

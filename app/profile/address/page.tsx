@@ -27,14 +27,15 @@ const Page: React.FC = () => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["Address"],
     queryFn: getAddress,
+    staleTime: 1000 * 60 * 30,
   });
 
   return (
     <div>
       <>
-        <div className="flex justify-between lg:hidden mt-5 px-4">
+        <div className="flex justify-between items-baseline lg:hidden mt-5 px-4">
           <Link href={"/profile/me"}>
-            <p className="text-text-sm flex text-customGray items-center	">
+            <p className="text-sm flex text-customGray items-center font-light	">
               <Back />
               <span className="mr-4"> آدرس‌های من</span>
             </p>
@@ -44,12 +45,12 @@ const Page: React.FC = () => {
             onClick={() => {
               rout.push("/profile/address/new");
             }}
-            className="flex lg:hidden items-center text-aquaBlue border max-md:text-xs  rounded-lg py-3 px-3 cursor-pointer mb-2 transform transition-all duration-300 hover:bg-aquaBlue hover:text-white hover:scale-105 active:scale-95"
+            className="flex lg:hidden items-center text-aquaBlue border font-medium text-xs max-md:text-xs max-md:h-[42px] max-md:w-[139px]  rounded-lg py-3 px-3 cursor-pointer mb-2 transform transition-all duration-300 hover:bg-aquaBlue hover:text-white hover:scale-105 active:scale-95"
           >
             <Location /> <span className="mr-3">ثبت آدرس جدید</span>
           </p>
         </div>
-        <div className="flex items-end justify-between max-md:mt-8 max-md:border-b max-md:px-4">
+        <div className="flex items-end justify-between max-md:mt-6 max-md:border-b max-md:px-4">
           <div className="flex relative pr-10 max-md:pr-0 max-md: ">
             <div className="relative ">
               <p className="px-5 cursor-pointer mb-2 text-turquoise">
@@ -101,7 +102,7 @@ const Page: React.FC = () => {
           )}
 
           {!isLoading && data && data.data.length > 0 && (
-            <div className="space-y-4">
+            <div className="space-y-2">
               {data.data.map((item: AddressItem) => (
                 <AddressBox
                   refetch={refetch}

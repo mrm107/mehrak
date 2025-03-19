@@ -1,14 +1,17 @@
+import {heroui} from '@heroui/theme';
 import type { Config } from "tailwindcss";
 
 export default {
     darkMode: ["class"],
-    content: [
+  content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@heroui/theme/dist/components/(dropdown|menu|divider|popover|button|ripple|spinner).js"
   ],
   theme: {
   	extend: {
+		
   		colors: {
   			lightGray: '#E7E7E7',
   			darkGray: '#5C5C5C',
@@ -77,13 +80,17 @@ export default {
   			}
   		},
   		spacing: {
-  			'27': '107px'
+  			'27': '107px',
+			'19' : '76px',
   		},
   		fontFamily: {
   			vazirmatn: [
   				'Vazirmatn FD'
   			]
   		},
+		  boxShadow: {
+			'top': '0px -4px 6px rgba(0, 0, 0, 0.1)',
+		  },
   		screens: {
   			sm: '640px',
   			md: '768px',
@@ -95,8 +102,9 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"),heroui()],
 } satisfies Config;

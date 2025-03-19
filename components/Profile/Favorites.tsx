@@ -27,9 +27,9 @@ const Favorites: React.FC<Collection> = ({ item, refetch }) => {
     <div className="bg-lightBlueGray border rounded-md">
       <div className="flex justify-between text-customGray p-4">
         <div className="flex flex-col">
-          <p className="max-md:text-xs">{item.title}</p>
+          <p className="max-md:text-xs text-sm font-med">{item.title}</p>
           <div className="flex">
-            <p className="max-md:text-xs">لیست عمومی</p>
+            <p className="max-md:text-xs text-sm font-light">لیست عمومی</p>
             <span className="flex mx-7 items-center max-md:mx-2 max-md:text-xs">
               <i className="text-aquaBlue">
                 <Save />
@@ -76,6 +76,7 @@ const Favorites: React.FC<Collection> = ({ item, refetch }) => {
             loading="lazy"
             width={148}
             height={148}
+            unoptimized 
             onLoadingComplete={(e) => e.classList.remove("blur-sm")}
           />
         ))}

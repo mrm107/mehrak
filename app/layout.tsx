@@ -1,40 +1,33 @@
-"use client";
+// app/layout.tsx
+import ClientWrapper from "./ClientWrapper";
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
-import Navbar from "@/components/Navbar";
-import { usePathname } from "next/navigation";
-// import { BreadcrumbWithCustomSeparator } from "@/components/Breadcrumb";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AppProvider } from "./context";
-import { UserProvider } from "./UserContext";
-import { BreadcrumbWithCustomSeparator } from "@/components/Breadcrumb";
-import useIsMobile from "@/hooks/useIsMobile";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: "اینطوریاس",
+    template: "%s | فروشگاه آنلاین من",
+  },
+  description: "بهترین محصولات با قیمت مناسب و ارسال سریع در فروشگاه ما.",
+  keywords: "فروشگاه آنلاین, خرید آسان, محصولات باکیفیت, ارسال سریع",
+  openGraph: {
+    title: "فروشگاه آنلاین من",
+    description: "خرید آسان و سریع با بهترین قیمت‌ها",
+    url: "https://yourwebsite.com",
+    type: "website",
+    locale: "fa_IR",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const queryClient = new QueryClient();
-  const pathname = usePathname();
-  const isMobile = useIsMobile();
- 
-
-
   return (
     <html lang="en" dir="rtl">
       <body>
-            <UserProvider>
-        {pathname !== "/login" && <Navbar />}
-        <div className="container mx-auto font-vazirmatn max-md:">
-        {pathname !== "/login" && !isMobile && <div className="mt-5"> <BreadcrumbWithCustomSeparator /></div>}
-          <QueryClientProvider client={queryClient}>
-              <AppProvider>
-             {children}
-              </AppProvider>
-          </QueryClientProvider>
-          <Toaster position="bottom-left" />
-        </div>
-            </UserProvider>
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );

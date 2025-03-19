@@ -1,6 +1,5 @@
 export const setToken = (token: string) => {
-  const expirationDate = new Date();
-  expirationDate.setHours(expirationDate.getHours() + 9); 
-
-  document.cookie = `token=${token}; expires=${expirationDate.toUTCString()}; path=/; Secure`;
+  const expires = new Date();
+  expires.setDate(expires.getDate() + 7); // 7 روز اضافه می‌شود
+  document.cookie = `token=${token}; path=/; Secure; Expires=${expires.toUTCString()}`;
 };
